@@ -9,30 +9,31 @@ import java.util.ArrayList;
 import java.util.List;
 
 import model.connection.Database;
-import model.vo.Filial;
+import model.vo.Departamento;
+
 
 public class DepartamentoDAO {
 
-	public void create(String nome, String cnpj, String inscEstadual) throws SQLException {
+	public void create(String nome, String CentroCusto, Float Orcamento) throws SQLException {
 		try (Connection con = Database.getConnection()) {
 
-			String sql = "INSERT INTO FILIAL (nome, cnpj, insc_estadual) values (?, ?, ?)";
+			String sql = "INSERT INTO FILIAL (nome, CentroCusto, Orcamento) values (?, ?, ?)";
 
 			try (PreparedStatement stmt = con.prepareStatement(sql)) {
 
 				stmt.setString(1,nome);
-				stmt.setString(2, cnpj);
-				stmt.setString(3, inscEstadual);
+				stmt.setString(2, CentroCusto);
+				stmt.setFloat(3, Orcamento);
 
 				boolean resultado = stmt.execute();
 			}
 		}
 	}
 
-	public List<Filial> read(String nomeSearch) throws SQLException {
-		List<Filial> filiais = new ArrayList<>();
+	public List<Departamento> read(String nomeSearch) throws SQLException {
+		List<Departamento> departamentos = new ArrayList<>();
 		try (Connection con = Database.getConnection()) {
-			String sql = "SELECT * FROM FILIAL WHERE nome LIKE %?%";
+			String sql = "SELECT * FROM DEPARTAMENTO WHERE nome LIKE %?%";
 			try (PreparedStatement stmt = con.prepareStatement(sql)) {
 				stmt.setString(1, nomeSearch);
 				boolean resultado = stmt.execute();
@@ -40,44 +41,44 @@ public class DepartamentoDAO {
 				while (rs.next()) {
 					int id = rs.getInt("id");
 					String nome = rs.getString("nome");
-					String cnpj = rs.getString("cnpj");
-					String inscEstadual = rs.getString("insc_estadual");
-					Filial filial = new Filial();
+					String centrocusto = rs.getString("CentroCusto");
+					Float orcamento = rs.getFloat("Orcamento");
+					Departamento departamento = new Departamento();
 
-					filial.setId(id);
-					filial.setNome(nome);
-					filial.setCnpj(cnpj);
-					filial.setInscEstadual(inscEstadual);
+					departamento.setId(id);
+					departamento.setNome(nome);
+					departamento.setCentroCusto(centrocusto);
+					departamento.setOrcamento(orcamento);
 
-					filiais.add(filial);
+					departamentos.add(departamento);
 				}
 			}
 
 		}
-		return filiais;
+		return departamentos;
 	}
 
-	public void update(Filial filial) throws SQLException {
+	public void update(Departamento departamento) throws SQLException {
 		try (Connection con = Database.getConnection()) {
-			String sql = "UPDATE FILIAL SET nome=?, cnpj=?, insc_estadual=? WHERE id=?";
+			String sql = "UPDATE DEPARTAMENTO SET nome=?, centrocusto=?, orcamento=? WHERE id=?";
 
 			try (PreparedStatement stmt = con.prepareStatement(sql)) {
-				stmt.setString(1, filial.getNome());
-				stmt.setString(2, filial.getCnpj());
-				stmt.setString(3, filial.getInscEstadual());
-				stmt.setInt(4, filial.getId());
+				stmt.setString(1, departamento.getNome());
+				stmt.setString(2, departamento.getCentroCusto());
+				stmt.setFloat(3, departamento.getOrcamento());
+				stmt.setInt(4, departamento.getId());
 
 				boolean resultado = stmt.execute();
 			}
 		}
 	}
 
-	public void delete(Filial filial) throws SQLException {
+	public void delete(Departamento departamento) throws SQLException {
 		try (Connection con = Database.getConnection()) {
-			String sql = "DELETE FROM FILIAL WHERE id=?";
+			String sql = "DELETE FROM DEPARTAMENTO WHERE id=?";
 
 			try (PreparedStatement stmt = con.prepareStatement(sql)) {
-				stmt.setInt(1, filial.getId());
+				stmt.setInt(1, departamento.getId());
 				boolean resultado = stmt.execute();
 			}
 		}
